@@ -1,0 +1,5 @@
+- gdb
+- (gdb) target remote localhost:1234
+- (gdb) set architecture i8086
+- (gdb) break *0x7c00
+- (gdb) cont
