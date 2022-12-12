@@ -1,4 +1,5 @@
 #include "../kernel/utls.h"
+#include "../cpu/types.h"
 
 #include "screen.h"
 #include "ports.h"
@@ -108,4 +109,16 @@ void print(char *str)
 	int i;
 	for(i=0; str[i]!='\0'; i++)
 		print_char(str[i], -1, -1, 0);
+}
+
+void set_char_at_video_memory(char character, int offset) {
+    uint8_t *vidmem = (uint8_t *) VIDEO_ADDRESS;
+    vidmem[offset] = character;
+    vidmem[offset + 1] = WHITE_ON_BLACK;
+}
+
+void print_backspace() {
+    int newCursor = get_cursor() - 2;
+    set_char_at_video_memory(' ', newCursor);
+    set_cursor(newCursor);
 }

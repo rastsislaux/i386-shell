@@ -16,4 +16,6 @@ void print_at(char* message, int row, int col);
 
 void print(char *str);
 
+void print_backspace();
+
 #endif

@@ -1,3 +1,5 @@
+#include "kernel.h"
+
 #include "../cpu/isr.h"
 
 #include "../drivers/screen.h"
@@ -13,4 +15,15 @@ void main() {
 
     print("Initializing keyboard (IRQ 1)...\n");
     init_keyboard();
+    print("> ");
+}
+
+void execute_command(char *input) {
+    if (strcmp(input, "EXIT") == 0) {
+        print("Stopping the CPU. Bye!\n");
+        asm volatile("hlt");
+    }
+    print("Unknown command: ");
+    print(input);
+    print("\n> ");
 }
