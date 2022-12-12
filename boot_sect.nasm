@@ -1,7 +1,6 @@
 ; A boot sector that boots a C kernel in 32-bit protected mode
 
 [org 0x7c00]
-mov ah, 0x0e ; teletype
 KERNEL_OFFSET equ 0x1000
     mov [BOOT_DRIVE], dl ; BIOS stores our boot drive in DL , so it ’s
                          ; best to remember this for later.
@@ -31,7 +30,7 @@ load_kernel:
     call print_string
 
     mov bx, KERNEL_OFFSET
-    mov dh, 15
+    mov dh, 9
     mov dl, [BOOT_DRIVE]
     call disk_load
 

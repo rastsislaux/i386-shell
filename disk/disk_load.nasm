@@ -4,11 +4,7 @@ disk_load:
             ; how many sectors were request to be read ,
             ; even if it is altered in the meantime
     
-    mov bx, MSG_DEBUG
-    call print_string
     mov ah , 0x02 ; BIOS read sector function
-    mov bx, MSG_DEBUG
-    call print_string
     mov al , dh ; Read DH sectors
 
     mov ch , 0x00 ; Select cylinder 0
@@ -17,19 +13,25 @@ disk_load:
                    ; after the boot sector )
 
     int 0x13 ; BIOS interrupt
-    jc disk_error ; Jump if error ( i.e. carry flag set )
+    jc disk_error_interrupt ; Jump if error ( i.e. carry flag set )
 
     pop dx ; Restore DX from the stack
 
     cmp dh , al ; if AL ( sectors read ) != DH ( sectors expected )
-    jne disk_error ; display error message
+    jne disk_error_sectors ; display error message
 
     ret
 
-disk_error:
-    mov bx , DISK_ERROR_MSG
+disk_error_interrupt:
+    mov bx, DISK_ERROR_INTERRUPT_MSG
+    call print_string
+    jmp $
+
+disk_error_sectors:
+    mov bx, DISK_ERROR_SECTORS_MSG
     call print_string
     jmp $
 
 ; Variables
-DISK_ERROR_MSG db " Disk read error !" , 0
+DISK_ERROR_INTERRUPT_MSG db "Disk read error: BIOS Error", 0
+DISK_ERROR_SECTORS_MSG   db "Disk read error: Sectors read != sectors expected", 0
