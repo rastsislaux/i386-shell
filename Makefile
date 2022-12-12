@@ -1,6 +1,6 @@
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c)
-HEADERS = $(wildcard kernel/*.h drivers/*.h)
-OBJ = ${C_SOURCES:.c=.o}
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h)
+OBJ = ${C_SOURCES:.c=.o cpu/interrupt.o}
 
 # Default
 all: os-image
@@ -25,7 +25,7 @@ kernel.bin: kernel/kernel_entry.o ${OBJ}
 	gcc -fno-pic -m32 -ffreestanding -c $< -o $@
 
 # Assemble assembly code (for kernel_entry)
-kernel/%.o : kernel/%.nasm
+%.o : %.nasm
 	nasm $< -f elf -o $@
 
 # Assemble the boot sector to raw machine code
@@ -38,4 +38,4 @@ kernel/%.o : kernel/%.nasm
 
 clean :
 	rm -fr *.bin *.dis *.o os-image
-	rm -fr kernel/*.o boot/*.bin drivers/*.o
+	rm -fr kernel/*.o boot/*.bin drivers/*.o cpu/*.o

@@ -1,6 +1,51 @@
-#include "screen.h"
-#include "../kernel/low_level.h"
 #include "../kernel/utls.h"
+
+#include "screen.h"
+#include "ports.h"
+
+int get_screen_offset(int row, int col){
+    return (row * MAX_COLS + col) * 2;
+}
+
+int handle_scrolling(int offset) {
+    
+    // if cursor is within screen, remain unmodified
+    if (offset < MAX_ROWS * MAX_COLS * 2) {
+        return offset;
+    }
+
+    // shuffle the rows back
+    memcpy(
+        VIDEO_ADDRESS + 2 * MAX_COLS,
+        VIDEO_ADDRESS,
+        2 * MAX_COLS * MAX_ROWS
+    );
+
+    char* last_line = get_screen_offset(0, MAX_ROWS - 1) + VIDEO_ADDRESS;
+    for (int i = 0; i < MAX_COLS * 2; i++) {
+        last_line[i] = 0;
+    }
+
+    offset -= 2 * MAX_COLS;
+
+    return offset;
+}
+
+int get_cursor(){
+    port_byte_out(REG_SCREEN_CTRL, 14);
+    int offset = port_byte_in(REG_SCREEN_DATA) << 8;
+    port_byte_out(REG_SCREEN_CTRL, 15);
+    offset += port_byte_in(REG_SCREEN_DATA);
+    return offset * 2;
+}
+
+void set_cursor(int offset){
+    offset /= 2;
+    port_byte_out(REG_SCREEN_CTRL, 14);
+    port_byte_out(REG_SCREEN_DATA, (unsigned char)(offset >> 8));
+    port_byte_out(REG_SCREEN_CTRL, 15);
+    port_byte_out(REG_SCREEN_DATA, (unsigned char)(offset));
+}
 
 /* Print char at row&col or at cursor position */
 void print_char(char character, int col, int row, char attribute_byte) {
@@ -33,50 +78,6 @@ void print_char(char character, int col, int row, char attribute_byte) {
 
     // update cursos pos
     set_cursor(offset);
-}
-
-int handle_scrolling(int offset) {
-    
-    // if cursor is within screen, remain unmodified
-    if (offset < MAX_ROWS * MAX_COLS * 2) {
-        return offset;
-    }
-
-    // shuffle the rows back
-    memcpy(
-        VIDEO_ADDRESS + 2 * MAX_COLS,
-        VIDEO_ADDRESS,
-        2 * MAX_COLS * MAX_ROWS
-    );
-
-    char* last_line = get_screen_offset(0, MAX_ROWS - 1) + VIDEO_ADDRESS;
-    for (int i = 0; i < MAX_COLS * 2; i++) {
-        last_line[i] = 0;
-    }
-
-    offset -= 2 * MAX_COLS;
-
-    return offset;
-}
-
-int get_screen_offset(int row, int col){
-    return (row * MAX_COLS + col) * 2;
-}
-
-int get_cursor(){
-    port_byte_out(REG_SCREEN_CTRL, 14);
-    int offset = port_byte_in(REG_SCREEN_DATA) << 8;
-    port_byte_out(REG_SCREEN_CTRL, 15);
-    offset += port_byte_in(REG_SCREEN_DATA);
-    return offset * 2;
-}
-
-void set_cursor(int offset){
-    offset /= 2;
-    port_byte_out(REG_SCREEN_CTRL, 14);
-    port_byte_out(REG_SCREEN_DATA, (unsigned char)(offset >> 8));
-    port_byte_out(REG_SCREEN_CTRL, 15);
-    port_byte_out(REG_SCREEN_DATA, (unsigned char)(offset));
 }
 
 void clear_screen()
