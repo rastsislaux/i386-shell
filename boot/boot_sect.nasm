@@ -18,11 +18,11 @@ KERNEL_OFFSET equ 0x1000
     jmp $
 
 ; Includes
-%include "print/print_string.nasm"
-%include "disk/disk_load.nasm"
-%include "pm/gdt.nasm"
-%include "pm/print_string_pm.nasm"
-%include "pm/switch_to_pm.nasm"
+%include "boot/print/print_string.nasm"
+%include "boot/disk/disk_load.nasm"
+%include "boot/pm/gdt.nasm"
+%include "boot/pm/print_string_pm.nasm"
+%include "boot/pm/switch_to_pm.nasm"
 
 [bits 16]
 load_kernel:
