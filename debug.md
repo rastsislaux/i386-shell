@@ -1,5 +1,0 @@
-- gdb
-- (gdb) target remote localhost:9999
-- (gdb) set architecture i386
-- (gdb) break *0x7c00
-- (gdb) cont
