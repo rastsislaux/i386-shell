@@ -1,10 +1,14 @@
+#include <stdint.h>
+
 #include "keyboard.h"
-#include "ports.h"
 #include "screen.h"
 
 #include "../cpu/isr.h"
-#include "../kernel/utls.h"
+#include "../cpu/ports.h"
 #include "../kernel/kernel.h"
+
+#include "../libc/string.h"
+#include "../libc/function.h"
 
 #define SC_MAX 57
 #define BACKSPACE 0x0E
@@ -43,9 +47,11 @@ static void keyboard_callback(registers_t *regs) {
     }
     
     char letter = scancode_to_char[(int) scancode];
-    append(key_buffer, letter);
+    strncat(key_buffer, letter);
     char str[2] = {letter, '\0'};
     print(str);
+
+    UNUSED(regs);
 }
 
 void init_keyboard() {

@@ -1,6 +1,8 @@
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c)
-HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h)
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c libc/*.c)
+HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h libc/*.h)
 OBJ = ${C_SOURCES:.c=.o cpu/interrupt.o}
+
+CFLAGS = -fno-pic -g -ffreestanding -Wall -Wextra -fno-exceptions -m32
 
 # Default
 all: os-image
@@ -22,7 +24,7 @@ kernel.bin: kernel/kernel_entry.o ${OBJ}
 
 # $< is the first dependancy and $@ is the target file
 %.o: %.c ${HEADERS}
-	gcc -fno-pic -m32 -ffreestanding -c $< -o $@
+	gcc ${CFLAGS} -c $< -o $@
 
 # Assemble assembly code (for kernel_entry)
 %.o : %.nasm
@@ -33,8 +35,6 @@ kernel.bin: kernel/kernel_entry.o ${OBJ}
 # routines that we include in boot_sect . asm
 %.bin : %.nasm
 	nasm $< -f bin -I . -o $@
-#boot_sect.bin : boot_sect.nasm
-#	nasm $< -f bin -I . -o $@
 
 clean :
 	rm -fr *.bin *.dis *.o os-image

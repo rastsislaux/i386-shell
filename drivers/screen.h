@@ -18,4 +18,6 @@ void print(char *str);
 
 void print_backspace();
 
+void clear_screen();
+
 #endif

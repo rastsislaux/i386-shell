@@ -16,6 +16,7 @@ isr_common_stub:
 
     ; 2. Call C handler
     push esp ; push registers_t *r pointer
+    cld
 	call isr_handler
 	pop eax ; clear pointer afterwards
 

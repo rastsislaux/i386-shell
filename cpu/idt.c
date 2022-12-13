@@ -1,3 +1,5 @@
+#include <stdint.h>
+
 #include "idt.h"
 
 idt_gate_t idt[IDT_ENTRIES];

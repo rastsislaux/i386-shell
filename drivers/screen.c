@@ -1,8 +1,11 @@
-#include "../kernel/utls.h"
-#include "../cpu/types.h"
+#include <stdint.h>
 
 #include "screen.h"
-#include "ports.h"
+
+#include "../cpu/ports.h"
+#include "../cpu/types.h"
+
+#include "../libc/memory.h"
 
 int get_screen_offset(int row, int col){
     return (row * MAX_COLS + col) * 2;
@@ -17,12 +20,12 @@ int handle_scrolling(int offset) {
 
     // shuffle the rows back
     memcpy(
-        VIDEO_ADDRESS + 2 * MAX_COLS,
-        VIDEO_ADDRESS,
+        (char*) VIDEO_ADDRESS + 2 * MAX_COLS,
+        (char*) VIDEO_ADDRESS,
         2 * MAX_COLS * MAX_ROWS
     );
 
-    char* last_line = get_screen_offset(0, MAX_ROWS - 1) + VIDEO_ADDRESS;
+    char* last_line = get_screen_offset(0, MAX_ROWS - 1) + (char*) VIDEO_ADDRESS;
     for (int i = 0; i < MAX_COLS * 2; i++) {
         last_line[i] = 0;
     }
