@@ -12,11 +12,11 @@
 #define REG_SCREEN_CTRL 0x3D4
 #define REG_SCREEN_DATA 0x3D5
 
-void print_at(char* message, int row, int col);
+void puts_at(char* message, int row, int col);
 
-void print(char *str);
+void puts(char *str);
 
-void print_backspace();
+void puts_backspace();
 
 void clear_screen();
 

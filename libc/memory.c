@@ -14,7 +14,7 @@ void memset(char* dest, unsigned char val, int no_bytes) {
     }
 }
 
-uint32_t free_mem_addr = 0x10000;
+uint32_t free_mem_addr = 0x1000;
 
 uint32_t malloc_int(size_t size, int align, uint32_t* phys_addr) {
     if (align == 1 && (free_mem_addr & 0xFFFFF000)) { // If the address is not already page-aligned

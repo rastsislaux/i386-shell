@@ -34,13 +34,13 @@ static void keyboard_callback(registers_t *regs) {
 
     if (scancode == BACKSPACE) {
         if (backspace(key_buffer)) {
-            print_backspace();
+            puts_backspace();
         }
         return;
     }
     
     if (scancode == ENTER) {
-        print("\n");
+        puts("\n");
         execute_command(key_buffer);
         key_buffer[0] = 0;
         return;
@@ -49,7 +49,7 @@ static void keyboard_callback(registers_t *regs) {
     char letter = scancode_to_char[(int) scancode];
     strncat(key_buffer, letter);
     char str[2] = {letter, '\0'};
-    print(str);
+    puts(str);
 
     UNUSED(regs);
 }

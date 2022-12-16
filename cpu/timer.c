@@ -14,12 +14,12 @@ uint32_t tick = 0;
 
 static void timer_callback(registers_t* regs) {
     tick++;
-    print("Tick: ");
+    puts("Tick: ");
 
     char tick_ascii[256];
     itoa(tick, tick_ascii);
-    print(tick_ascii);
-    print("\n");
+    puts(tick_ascii);
+    puts("\n");
 
     UNUSED(regs);
 }

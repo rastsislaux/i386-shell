@@ -10,26 +10,33 @@
 
 #include "../libc/string.h"
 #include "../libc/memory.h"
+#include "../libc/paging.h"
 
 #include "graphics.h"
 
 void kernel_main() {
-    print(LOGO "\n");
-    print("Installing interrupt service routines (ISRs)...\n");
+    puts(LOGO "\n");
+    puts("Installing interrupt service routines (ISRs)...\n");
     isr_install();
 
-    print("Enabling external interrupts...\n");
+    puts("Enabling external interrupts...\n");
     asm volatile("sti");
 
-    print("Initializing keyboard (IRQ 1)...\n");
+    puts("Initializing keyboard (IRQ 1)...\n");
     init_keyboard();
+
+    puts("Initializing paging...\n");
+    init_paging();
     
-    print("> ");
+    //uint32_t* ptr = (uint32_t*) 0xA000000;
+    //uint32_t do_page_fault = *ptr;
+
+    puts("> ");
 }
 
 void execute_command(char *input) {
     if (strcmp(input, "EXIT") == 0) {
-        print("Stopping the CPU. Bye!\n");
+        puts("Stopping the CPU. Bye!\n");
         asm volatile("hlt");
     }
 
@@ -40,29 +47,29 @@ void execute_command(char *input) {
 
     if (strcmp(input, "CLEAR") == 0) {
         clear_screen();
-        print("> ");
+        puts("> ");
         return;
     }
 
     if (strcmp(input, "SABLE") == 0) {
-        print("Glory to Sobol A. M.!\n> ");
+        puts("Glory to Sobol A. M.!\n> ");
         return;
     }
 
     if (strcmp(input, "SABLEJR") == 0) {
-        print("Glory to Sobol A.M. and Tsiruk V. A.!\n> ");
+        puts("Glory to Sobol A.M. and Tsiruk V. A.!\n> ");
         return;
     }
 
     if (strcmp(input, "DINOSAUR") == 0) {
-        print(DINOSAUR);
-        print("\n> ");
+        puts(DINOSAUR);
+        puts("\n> ");
         return;
     }
 
     if (strcmp(input, "TRICERATOPS") == 0) {
-        print(TRICERATOPS);
-        print("\n> ");
+        puts(TRICERATOPS);
+        puts("\n> ");
         return;
     }
 
@@ -74,14 +81,14 @@ void execute_command(char *input) {
         char phys_str[16] = "";
         htoa(phys_addr, phys_str);
 
-        print("Page: ");
-        print(page_str);
-        print(", physical address: ");
-        print(phys_str);
-        print("\n");
+        puts("Page: ");
+        puts(page_str);
+        puts(", physical address: ");
+        puts(phys_str);
+        puts("\n");
     }
 
-    print("Unknown command: ");
-    print(input);
-    print("\n> ");
+    puts("Unknown command: ");
+    puts(input);
+    puts("\n> ");
 }

@@ -75,7 +75,7 @@ void isr_install() {
     load_idt();
 }
 
-/* To print the message which defines every exception */
+/* To puts the message which defines every exception */
 char *exception_messages[] = {
         "Division By Zero",
         "Debug",
@@ -115,8 +115,8 @@ char *exception_messages[] = {
 };
 
 void isr_handler(registers_t *r) {
-    print(exception_messages[r->int_no]);
-    print("\n");
+    puts(exception_messages[r->int_no]);
+    puts("\n");
 }
 
 void irq_handler(registers_t *r) {

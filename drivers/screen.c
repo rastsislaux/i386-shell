@@ -6,6 +6,7 @@
 #include "../cpu/types.h"
 
 #include "../libc/memory.h"
+#include "../libc/string.h"
 
 int get_screen_offset(int row, int col){
     return (row * MAX_COLS + col) * 2;
@@ -51,8 +52,8 @@ void set_cursor(int offset){
     port_byte_out(REG_SCREEN_DATA, (unsigned char)(offset));
 }
 
-/* Print char at row&col or at cursor position */
-void print_char(char character, int col, int row, char attribute_byte) {
+/* puts char at row&col or at cursor position */
+void puts_char(char character, int col, int row, char attribute_byte) {
     unsigned char *video_memory = (unsigned char*) VIDEO_ADDRESS;
 
     /* if attribute byte is 0, then default style */
@@ -89,13 +90,13 @@ void clear_screen()
 	int i,j;
 	for(i=0; i<MAX_ROWS; i++){
 		for(j=0;j<MAX_COLS;j++){
-			print_char(' ', i, j, WHITE_ON_BLACK);
+			puts_char(' ', i, j, WHITE_ON_BLACK);
 		}
 	}
 	set_cursor(get_screen_offset(0, 0));
 }
 
-void print_at(char* message, int row, int col){
+void puts_at(char* message, int row, int col){
 	if (row >= 0 && col >= 0){
 		set_cursor(get_screen_offset(row, col));
 	}
@@ -103,15 +104,27 @@ void print_at(char* message, int row, int col){
 	char c;
 	int i = 0;
 	while((c = message[i++]) != 0){
-		print_char(c, -1, -1, 0);
+		puts_char(c, -1, -1, 0);
 	}
 }
 
-void print(char *str)
+void puts(char *str)
 {
 	int i;
 	for(i=0; str[i]!='\0'; i++)
-		print_char(str[i], -1, -1, 0);
+		puts_char(str[i], -1, -1, 0);
+}
+
+void puti(int decimal) {
+    char str[64];
+    itoa(decimal, str);
+    puts(str);
+}
+
+void putx(int hex) {
+    char str[64];
+    htoa(hex, str);
+    puts(str);
 }
 
 void set_char_at_video_memory(char character, int offset) {
@@ -120,7 +133,7 @@ void set_char_at_video_memory(char character, int offset) {
     vidmem[offset + 1] = WHITE_ON_BLACK;
 }
 
-void print_backspace() {
+void puts_backspace() {
     int newCursor = get_cursor() - 2;
     set_char_at_video_memory(' ', newCursor);
     set_cursor(newCursor);

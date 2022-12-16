@@ -2,6 +2,7 @@
 #define MEMORY_H
 
 #include <stddef.h>
+#include <stdint.h>
 #include "../cpu/types.h"
 
 void memcpy(char* source, char* dest, int no_bytes);

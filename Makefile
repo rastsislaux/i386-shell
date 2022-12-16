@@ -2,20 +2,20 @@ C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c libc/*.c)
 HEADERS = $(wildcard kernel/*.h drivers/*.h cpu/*.h libc/*.h)
 OBJ = ${C_SOURCES:.c=.o cpu/interrupt.o}
 
-CFLAGS = -fno-pic -g -ffreestanding -Wall -Wextra -fno-exceptions -m32
+CFLAGS = -fno-pic -g -ffreestanding -Wall -Wextra -fno-exceptions  -m32
 
 # Default
-all: os-image
+all: image.bin
 
 # simulate booting
 run: all
-	qemu-system-i386 os-image
+	qemu-system-i386 image.bin
 
 debug:
-	qemu-system-i386 os-image -gdb tcp::9999 -S
+	qemu-system-i386 image.bin -gdb tcp::9999 -S
 
-os-image: boot/boot_sect.bin kernel.bin
-	cat $^ > os-image
+image.bin: boot/boot_sect.bin kernel.bin
+	cat $^ > image.bin
 
 # Build the kernel binary
 # $^ is substituted with all of the target’s dependancy files
@@ -24,7 +24,7 @@ kernel.bin: kernel/kernel_entry.o ${OBJ}
 
 # $< is the first dependancy and $@ is the target file
 %.o: %.c ${HEADERS}
-	gcc ${CFLAGS} -c $< -o $@
+	gcc ${CFLAGS} -DTOTAL_RAM_SIZE=$(RAM_SIZE) -c $< -o $@
 
 # Assemble assembly code (for kernel_entry)
 %.o : %.nasm
@@ -37,5 +37,5 @@ kernel.bin: kernel/kernel_entry.o ${OBJ}
 	nasm $< -f bin -I . -o $@
 
 clean :
-	rm -fr *.bin *.dis *.o os-image
+	rm -fr *.bin *.dis *.o image.bin
 	rm -fr kernel/*.o boot/*.bin drivers/*.o cpu/*.o
