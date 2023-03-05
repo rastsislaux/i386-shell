@@ -1,6 +1,6 @@
-# Sable OS
+# Sable Shell
 
-This is a minimal 32-bit operating system designed for i386 architecture.<br>
+This is a minimal shell written to be run on i386 processors without any OS.<br>
 
 ## Quick start
 
@@ -10,8 +10,8 @@ You'll need:
 - make
 - QEMU
 
-To run this OS in QEMU, use `make run`
-To build this OS image, use `make all`
+To run this shell in QEMU, use `make run`
+To build this shell image, use `make all`
 
 ## Debug
 
